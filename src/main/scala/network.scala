@@ -45,10 +45,10 @@ class Network(sizes: Array[Int],
 
   private def updateWeights(feature: Vector, target: Vector) = {
     val output = feedForward(feature)
-    var errors = layers.last.update(target)
+    val errors = layers.last.update(target)
 
-    layers.slice(0, layers.length - 1).reverse foreach { layer =>
-      errors = layer.update(target, Some(errors))
+    layers.slice(0, layers.length - 1).reverse.foldLeft(errors) {
+      case (err, layer) => layer.update(target, Some(err))
     }
   }
 
