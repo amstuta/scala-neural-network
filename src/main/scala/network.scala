@@ -4,6 +4,20 @@ import org.apache.spark.mllib.linalg.{Vectors,Vector}
 import org.apache.spark.mllib.linalg.{Matrices,Matrix}
 
 
+/**
+ * Represents the neural network.
+ *
+ * @param sizes Array representing the number of layers in the network and
+ *              their size
+ * @param learningRate The learning rate / alpha of the network
+ *
+ * Example of usage
+ *  {{{
+ *  scala> import com.neuralnetwork.Network
+ *  scala> val net = new Network(Array(1,2,1), 0.001)
+ *  net: => 1 neuron(s)=> 2 neuron(s)=> 1 neuron(s)
+ *  }}}
+ */
 class Network(sizes: Array[Int],
               private val learningRate: Double=0.01)
 {
@@ -17,6 +31,17 @@ class Network(sizes: Array[Int],
   }
 
 
+  /**
+   * Trains the neural network with the provided inputs and outputs
+   *
+   * @param features   Array containing the inputs of the network. The number of
+   *                   values in each Vector must correspond to the number of
+   *                   input neurons
+   * @param targets    Array containing the outputs of the network. The number of
+   *                   values in each Vector must correspond to the number of
+   *                   output neurons
+   * @param iterations The number of iterations to perform to train the network
+   */
   def fit(features: Array[Vector], targets: Array[Vector], iterations: Int=1000) = {
     0 to iterations foreach { i =>
       features.zip(targets) foreach {
@@ -26,10 +51,23 @@ class Network(sizes: Array[Int],
   }
 
 
+  /**
+   * Makes a prediction given an input Vector
+   *
+   * @param features  Vector containing the input values. It must contain the
+   *                  same number of values that the number of input neurons
+   * @return          A Vector containing the prediction
+   */
   def predict(features: Vector): Vector =
     feedForward(features)
 
 
+  /**
+   * Propagates an input in all the layers and returns the output
+   *
+   * @param features  Vector containing the input values
+   * @return          A vector containing the prediction
+   */
   private def feedForward(features: Vector) = {
     var inputs = features
     var prev = layers.head
@@ -43,6 +81,12 @@ class Network(sizes: Array[Int],
   }
 
 
+  /**
+   * Used during the training to update the weights in the network
+   *
+   * @param feature Input of the network
+   * @param target  Output corresponding to the input given
+   */
   private def updateWeights(feature: Vector, target: Vector) = {
     val output = feedForward(feature)
     val errors = layers.last.update(target)

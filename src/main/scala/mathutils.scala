@@ -1,4 +1,7 @@
 package com.mathutils
+/**
+ * Provides implicit classes to add operations to Matix and Vector classes
+ */
 
 import scala.util.control.Exception
 import org.apache.spark.mllib.linalg.{Vectors,Vector}
